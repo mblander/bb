@@ -1,1 +1,120 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two Iframes with Synchronized Navigation</title>
+
+  <!-- Include jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    /* Global box-sizing for all elements */
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Address bar styling */
+    .address-bar {
+      width: 100%;
+      padding: 10px;
+      background-color: brown;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    /* Flex container for the iframes */
+    .iframe-container {
+      display: flex;
+      height: 100%;
+    }
+
+    iframe {
+      border: none;
+      border-right: 3px solid black;
+      height: 100%;
+    }
+
+    /* First iframe with fixed width */
+    iframe:nth-child(1) {
+      width: 390px;
+    }
+    iframe:nth-child(2) {
+      width: 700px;
+    }
+
+    /* Second iframe takes remaining space */
+    iframe:nth-child(3) {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Address bar to input the URL -->
+  <div class="address-bar">
+    <input id="url-input" type="text" value="http://localhost:4200/waveriders-rentals/sailing-boats/aqua-horizon" />
+  </div>
+
+  <!-- Container for the iframes -->
+  <div class="iframe-container">
+    <iframe id="iframe1" src="http://localhost:4200/waveriders-rentals/sailing-boats/aqua-horizon"></iframe>
+    <iframe id="iframe2" src="http://localhost:4200/waveriders-rentals/sailing-boats/aqua-horizon"></iframe>
+    <iframe id="iframe3" src="http://localhost:4200/waveriders-rentals/sailing-boats/aqua-horizon"></iframe>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      const $urlInput = $('#url-input');
+      const $iframe1 = $('#iframe1');
+      const $iframe2 = $('#iframe2');
+      const $iframe3 = $('#iframe3');
+      
+      // Load saved URL from localStorage if it exists
+      const savedUrl = localStorage.getItem('savedUrl');
+      if (savedUrl) {
+        $urlInput.val(savedUrl);
+        $iframe1.attr('src', savedUrl);
+        $iframe2.attr('src', savedUrl);
+        $iframe3.attr('src', savedUrl);
+      }
+      
+      function updateFrame($frame, newUrl){
+        const currentUrl = $frame.attr('src');
+        
+        if (currentUrl !== newUrl) {
+          $frame.attr('src', newUrl);
+        }
+      }
+
+      // Update both iframes when the user changes the input value
+      $urlInput.on('input', function () {
+        const newUrl = $(this).val();
+        // Save to localStorage
+        localStorage.setItem('savedUrl', newUrl);
+        
+        updateFrame($iframe1, newUrl);
+        updateFrame($iframe2, newUrl);
+        updateFrame($iframe3, newUrl);
+      });
+    });
+  </script>
+
+</body>
+
+</html>
